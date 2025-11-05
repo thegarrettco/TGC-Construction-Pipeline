@@ -268,7 +268,13 @@
       display: block;
       border-radius: 16px;
     }
-
+    
+    .logo {
+  	height: 45px; /* adjust as needed */
+  	width: auto;
+  	vertical-align: middle;
+	}
+	
     @media (max-width: 900px) {
       .main-grid {
         grid-template-columns: 1fr;
@@ -283,7 +289,9 @@
 
 <body>
   <header>
-    <h1>TGC Construction Pipeline</h1>
+    <h1>
+  <img src="https://static.wixstatic.com/media/4f7dd4_2baa0e2530394de3af14df33ce1cdfe9~mv2.png" alt="The Garrett Companies" class="logo">
+</h1>
     <select id="projectSelector"></select>
   </header>
 
