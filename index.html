@@ -274,6 +274,14 @@
   	width: auto;
   	vertical-align: middle;
 	}
+    
+    .metric-details {
+  font-size: 0.85rem;
+  color: var(--secondary);
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+
 	
     @media (max-width: 900px) {
       .main-grid {
@@ -345,11 +353,11 @@
           "Estimated Sale Year":"2026"
         },
         financials: {
-          "Avg Market Rent":"$X,XXX",
+          "Average Market Rent": "$X,XXX",
           "Market Rent PSF":"$X.XX",
           "Total Project Cost":"$51.6M",
           "Cost Per Unit":"$403k",
-          "Sale Price":"$59.2M",
+          "Sale Price": { value: "$59.2M", details: "<b>Debt:</b> $42,284,894.08 (71.4%)<br><b>Equity:</b> $9,282,049.92 (28.6%)" },
           "Exit Price/Unit":"$463k",
           "Yield":"6.75%",
           "Exit Cap Rate":"X.XX%",
@@ -389,7 +397,7 @@
           "Market Rent PSF":"$X.XX",
           "Total Project Cost":"$76.6M",
           "Cost Per Unit":"$295K",
-          "Sale Price":"$109M",
+          "Sale Price": { value: "$109M", details: "<b>Debt:</b> $52,500,000.00 (48.2%)<br><b>Equity:</b> $22,913,534.50 (51.8%)" },
           "Exit Price/Unit":"$419k",
           "Yield":"7.23%",
           "Exit Cap Rate":"X.XX%",
@@ -429,7 +437,7 @@
           "Market Rent PSF":"$X.XX",
           "Total Project Cost":"$48.6M",
           "Cost Per Unit":"$241k",
-          "Sale Price":"$64.7M",
+          "Sale Price": { value: "$64.7M", details: "<b>Debt:</b> $31,580,212.95 (48.8%)<br><b>Equity:</b> $15,304,257.00 (51.2%)" },
           "Exit Price/Unit":"$320k",
           "Yield":"7.00%",
           "Exit Cap Rate":"X.XX%",
@@ -486,18 +494,43 @@
         table.appendChild(tr);
       });
 
-      // Financial Metrics
-      const metricsDiv = content.querySelector(".financial-metrics");
-      metricsDiv.innerHTML = "";
-      Object.entries(project.financials).forEach(([label, value]) => {
-        const card = document.createElement("div");
-        card.className = "metric-card";
-        card.innerHTML = `
-          <div class="metric-label">${label}</div>
-          <div class="metric-value">${value}</div>
-        `;
-        metricsDiv.appendChild(card);
-      });
+      // Financial Metrics (updated for expandable cards)
+const metricsDiv = content.querySelector(".financial-metrics");
+metricsDiv.innerHTML = "";
+
+Object.entries(project.financials).forEach(([label, info]) => {
+  const card = document.createElement("div");
+  card.className = "metric-card";
+
+  // Determine if info is object or string
+  const value = typeof info === "object" ? info.value : info;
+  const details = typeof info === "object" && info.details ? info.details : null;
+
+  card.innerHTML = `
+    <div class="metric-label">${label}</div>
+    <div class="metric-value">${value}</div>
+    ${details ? `<div class="metric-details">${details}</div>` : ""}
+  `;
+
+  // Only add click behavior if details exist
+  if (details) {
+    const detailsDiv = card.querySelector(".metric-details");
+    detailsDiv.style.display = "none"; // initially hidden
+
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => {
+      // toggle visibility
+      if (detailsDiv.style.display === "none") {
+        detailsDiv.style.display = "block";
+      } else {
+        detailsDiv.style.display = "none";
+      }
+    });
+  }
+
+  metricsDiv.appendChild(card);
+});
+
 
       // Rendering Gallery
       const renderingDiv = content.querySelector(".rendering-section");
