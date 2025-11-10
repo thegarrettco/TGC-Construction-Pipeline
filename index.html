@@ -69,6 +69,41 @@
       padding: 2rem 5%;
       animation: fadeIn 0.6s ease-in-out;
     }
+    
+    .dropdown-container {
+  	display: flex;
+  	align-items: center;
+  	gap: 1rem;
+	}
+
+	select {
+  	 background-color: white;
+ 	 color: var(--secondary);
+ 	 border: none;
+ 	 border-radius: 6px;
+ 	 padding: 0.6rem 1.2rem;
+ 	 font-size: 1rem;
+ 	 cursor: pointer;
+ 	 box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+ 	 max-width: 250px;
+	}
+
+/* Dropdown scroll behavior */
+	select option {
+  	padding: 0.4rem 0.8rem;
+	}
+
+	select:focus {
+  outline: 2px solid var(--primary);
+}
+
+/* Force scrollable dropdown list */
+select[multiple], select {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  max-height: 200px;
+}
+
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -300,7 +335,16 @@
     <h1>
   <img src="https://static.wixstatic.com/media/4f7dd4_2baa0e2530394de3af14df33ce1cdfe9~mv2.png" alt="The Garrett Companies" class="logo">
 </h1>
-    <select id="projectSelector"></select>
+    <div class="dropdown-container">
+  <select id="stateSelector">
+  <option value="" disabled selected>Select State</option>
+</select>
+
+<select id="projectSelector">
+  <option value="" disabled selected>Select Project</option>
+</select>
+
+</div>
   </header>
 
   <div class="content" id="projectContent">
@@ -335,9 +379,51 @@
   </div>
 
   <script>
-    const projects = {
+  
+const projects = {
+  tgcportfolio: {
+    name: "Full TGC Portfolio",
+        location: "Garrett Construction Pipeline",
+        highlights: [
+          "Investment Higlight will go in this space",
+          "Investment Higlight will go in this space"
+        ],
+        details: {
+          "Address":"50 County Rd 3, Erie, CO 80516",
+          "Prototype":"Prototype Here",
+          "Project Type":"Project Type Here",
+          "Total Units":"267",
+          "Average Unit Size":"1,020 SF",
+          "Site Area":"10.63 Acres",
+          "Construction Start":"Q4 2025",
+          "Construction Completion":"Q3 2027",
+          "Estimated Sale Year":"2028"
+        },
+        financials: {
+          "Average Market Rent": { value: "$2,258", details: "<b>One-Bedrooms:</b> $X,XXX<br><b>Two-Bedrooms:</b> $X,XXX<br><b>Three-Bedrooms:</b> $X,XXX<br>" },
+          "Market Rent PSF": { value: "$2.21", details: "<b>One-Bedrooms:</b> $X.XX<br><b>Two-Bedrooms:</b> $X.XX<br><b>Three-Bedrooms:</b> $X.XX<br>" },
+          "Total Project Cost": { value: "$81.3M", details: "<b>Debt:</b> $52,862,716.26 (65.0%)<br><b>LP Equity:</b> $25,618,085.57 (90.0%)" },
+          "Cost Per Unit":"$305k",
+          "Sale Price": "$103.7M",
+          "Exit Price/Unit":"$388k",
+          "Yield":"7.01%",
+          "Exit Cap Rate":"5.50%"
+        },
+        renderings: [
+          "https://static.wixstatic.com/media/4f7dd4_b8e32391bceb4e59b327f3fc09e2a930~mv2.png",
+          "https://static.wixstatic.com/media/4f7dd4_61f93fdbb7004815b0c56a7e0aacf182~mv2.png",        
+  "https://static.wixstatic.com/media/4f7dd4_aa3fda402a4c4ce3b1376dd049736630~mv2.png", 
+  "https://static.wixstatic.com/media/4f7dd4_5feff0f060c44971ab765afd97cf154c~mv2.png",
+          "https://static.wixstatic.com/media/4f7dd4_994344504b3049f5880bbdcac033b485~mv2.png",    
+ "https://static.wixstatic.com/media/4f7dd4_4529f002c028492cb4897415f29a44d7~mv2.png", 
+  "https://static.wixstatic.com/media/4f7dd4_df974da00f484a57b408d866c9cd8cdb~mv2.png",  
+          "https://static.wixstatic.com/media/4f7dd4_03e2b5c87a014bef9f0dec286959a3ef~mv2.png"
+        ],
+        mapUrl: "https://www.google.com/maps?q=40.001797, -105.034062&output=embed"
+      },
       eriesouth: {
         name: "Garrett Erie South",
+        state: "Colorado",
         location: "Erie, Colorado",
         highlights: [
           "Investment Higlight will go in this space",
@@ -378,6 +464,7 @@
       },
       northcharleston: {
         name: "Garrett North Charleston",
+        state: "South Carolina",
         location: "Charleston, South Carolina",
         highlights: [
           "Incredible Access and Visibility to I-26",
@@ -418,6 +505,7 @@
       },
       coremesa: {
         name: "Core Mesa",
+        state: "Arizona",
         location: "Mesa, Arizona",
         highlights: [
           "Next door to Mesa Banner Gateway Medical Center",
@@ -458,6 +546,7 @@
       },
       flyingsaucer: {
         name: "Flying Saucer",
+        state: "Colorado",
         location: "Sheridan, Colorado",
         highlights: [
           "Prime suburban infill location",
@@ -498,6 +587,7 @@
       },
       superior: {
         name: "Superior",
+        state: "Colorado",
         location: "Superior, Colorado",
         highlights: [
           "Extremely high barrier to entry submarket along US-36 Corridor",
@@ -538,6 +628,7 @@
       },
       garrettcentennial: {
         name: "Garrett Centennial",
+        state: "Colorado",
         location: "Centennial, Colorado",
         highlights: [
           "Investment Higlight will go in this space",
@@ -578,6 +669,7 @@
       },
       harvestjunctioneast: {
         name: "Garrett Harvest Junction West",
+        state: "Colorado",
         location: "Longmont, Colorado",
         highlights: [
           "Investment Higlight will go in this space",
@@ -618,6 +710,7 @@
       },
       rivernorth: {
         name: "Garrett River North",
+        state: "Indiana",
         location: "Indianapolis, Indiana",
         highlights: [
           "Highly visible from I-465",
@@ -658,6 +751,7 @@
       },
       everrange: {
         name: "Everrange",
+        state: "Florida",
         location: "Jacksonville, Florida",
         highlights: [
           "Located along the highly trafficked US Route 1",
@@ -698,6 +792,7 @@
       },
       hylandvillage: {
         name: "Hyland Village II",
+        state: "Colorado",
         location: "Westminster, Colorado",
         highlights: [
           "Investment Higlight will go in this space",
@@ -738,6 +833,7 @@
       },
       rosegarden: {
         name: "Rose Garden",
+        state: "Arizona",
         location: "Phoenix, Arizona",
         highlights: [
           "10-Minutes from TSMC SemiConductor Fabrication ($40B Project)",
@@ -778,6 +874,7 @@
       },
       dawsontrails: {
         name: "Dawson Trails",
+        state: "Colorado",
         location: "Castle Rock, Colorado",
         highlights: [
           "Investment Higlight will go in this space",
@@ -818,6 +915,7 @@
       },
       centralpark: {
         name: "Central Park",
+        state: "Colorado",
         location: "Denver, Colorado",
         highlights: [
           "Prime suburban infill location",
@@ -858,6 +956,7 @@
       },
       briercreek: {
         name: "Garrett Brier Creek",
+        state: "North Carolina",
         location: "Raleigh, North Carolina",
         highlights: [
           "Minutes from Research Triangle Park",
@@ -895,18 +994,63 @@
           "https://static.wixstatic.com/media/4f7dd4_044559623aec4fcb96b149ea8fc938a0~mv2.jpg"
         ],
         mapUrl: "https://www.google.com/maps?q=35.903648, -78.809562&output=embed"
-      }
+      }      
     };
 
+    const stateSelector = document.getElementById('stateSelector');
     const selector = document.getElementById("projectSelector");
     const content = document.getElementById("projectContent");
 
+    stateSelector.innerHTML = '<option value="" disabled selected>Select State</option>';
+const states = [...new Set(Object.values(projects).map(p => p.state).filter(Boolean))];
+states.forEach(state => {
+  const option = document.createElement('option');
+  option.value = state;
+  option.textContent = state;
+  stateSelector.appendChild(option);
+});
+    
     Object.keys(projects).forEach(key => {
       const option = document.createElement("option");
       option.value = key;
       option.textContent = projects[key].name;
       selector.appendChild(option);
     });
+    
+    // When a state is selected, filter projects
+stateSelector.addEventListener('change', e => {
+  const selectedState = e.target.value;
+
+  // Clear current project dropdown
+  selector.innerHTML = '<option value="" disabled selected>Select Project</option>';
+
+  // Get projects in selected state
+  const filteredProjects = Object.entries(projects)
+    .filter(([key, project]) => project.state === selectedState);
+
+  // If no projects found, optionally show full portfolio
+  if (filteredProjects.length === 0) {
+    Object.keys(projects).forEach(key => {
+      const option = document.createElement('option');
+      option.value = key;
+      option.textContent = projects[key].name;
+      selector.appendChild(option);
+    });
+  } else {
+    filteredProjects.forEach(([key, project]) => {
+      const option = document.createElement('option');
+      option.value = key;
+      option.textContent = project.name;
+      selector.appendChild(option);
+    });
+  }
+
+  // Render first project in the filtered list (or do nothing if none)
+  if (filteredProjects.length > 0) {
+    renderProject(filteredProjects[0][0]);
+  }
+});
+
 
     let slideIndex = 1;
 
