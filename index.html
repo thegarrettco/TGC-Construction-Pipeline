@@ -1000,69 +1000,50 @@ const projects = {
     };
 
     const stateSelector = document.getElementById('stateSelector');
-    const selector = document.getElementById("projectSelector");
-    const content = document.getElementById("projectContent");
+const selector = document.getElementById("projectSelector");
+const content = document.getElementById("projectContent");
 
-    stateSelector.innerHTML = '<option value="" disabled selected>Select State</option>';
+// Populate state dropdown
 const states = [...new Set(Object.values(projects).map(p => p.state).filter(Boolean))];
-states.forEach(state => {
-  const option = document.createElement('option');
-  option.value = state;
-  option.textContent = state;
-  stateSelector.appendChild(option);
-  
-  // Add "All States" at the top
-stateSelector.innerHTML = `<option value="all" selected>All States</option>` + 
+stateSelector.innerHTML = `<option value="all" selected>All States</option>` +
                           states.map(state => `<option value="${state}">${state}</option>`).join('');
-});
-    
-    Object.keys(projects).forEach(key => {
+
+// Populate project dropdown (Full TGC Portfolio always first)
+function populateProjectDropdown(filteredProjects) {
+  selector.innerHTML = '<option value="tgcportfolio">Full TGC Portfolio</option>';
+  filteredProjects.forEach(([key, project]) => {
+    if (key !== 'tgcportfolio') {
       const option = document.createElement("option");
-      option.value = key;
-      option.textContent = projects[key].name;
-      selector.appendChild(option);
-    });
-    
-    // When a state is selected, filter projects
-stateSelector.addEventListener('change', e => {
-  const selectedState = e.target.value;
-
-  // Clear current project dropdown
-  selector.innerHTML = '<option value="" disabled selected>Select Project</option>';
-
-  // Get projects in selected state
-  const filteredProjects = Object.entries(projects)
-    .filter(([key, project]) => project.state === selectedState);
-
-  // If no projects found, optionally show full portfolio
-  if (filteredProjects.length === 0) {
-    Object.keys(projects).forEach(key => {
-      const option = document.createElement('option');
-      option.value = key;
-      option.textContent = projects[key].name;
-      selector.appendChild(option);
-    });
-  } else {
-    filteredProjects.forEach(([key, project]) => {
-      const option = document.createElement('option');
       option.value = key;
       option.textContent = project.name;
       selector.appendChild(option);
-    });
+    }
+  });
+}
+
+// Initial full project list
+populateProjectDropdown(Object.entries(projects));
+
+// Filter projects by state
+stateSelector.addEventListener('change', e => {
+  const selectedState = e.target.value;
+  let filteredProjects = Object.entries(projects);
+
+  if (selectedState !== 'all') {
+    filteredProjects = filteredProjects.filter(([key, project]) => project.state === selectedState);
   }
 
-  // Render first project in the filtered list (or do nothing if none)
-  if (filteredProjects.length > 0) {
-    renderProject(filteredProjects[0][0]);
-  }
+  populateProjectDropdown(filteredProjects);
+
+  // Render first project in filtered list
+  renderProject(filteredProjects.length > 0 ? filteredProjects[0][0] : 'tgcportfolio');
 });
 
-
-    let slideIndex = 1;
-
-    function renderProject(key) {
-      const project = projects[key];
-      if (!project) return;
+// --- Render function including custom Full TGC Portfolio H4s ---
+let slideIndex = 1;
+function renderProject(key) {
+  const project = projects[key];
+  if (!project) return;
 
       // Header
       content.querySelector(".project-header h2").textContent = project.name;
