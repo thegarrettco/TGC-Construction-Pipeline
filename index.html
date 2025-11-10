@@ -1008,11 +1008,20 @@ const states = [...new Set(Object.values(projects).map(p => p.state).filter(Bool
 stateSelector.innerHTML = `<option value="all" selected>All States</option>` +
                           states.map(state => `<option value="${state}">${state}</option>`).join('');
 
-// Populate project dropdown (Full TGC Portfolio always first)
-function populateProjectDropdown(filteredProjects) {
-  selector.innerHTML = '<option value="tgcportfolio">Full TGC Portfolio</option>';
+// Populate project dropdown
+function populateProjectDropdown(filteredProjects, selectedState = 'all') {
+  selector.innerHTML = '';
+
+  // Only show Full TGC Portfolio when unfiltered (All States)
+  if (selectedState === 'all') {
+    const fullOption = document.createElement("option");
+    fullOption.value = 'tgcportfolio';
+    fullOption.textContent = "Full TGC Portfolio";
+    selector.appendChild(fullOption);
+  }
+
   filteredProjects.forEach(([key, project]) => {
-    if (key !== 'tgcportfolio') {
+    if (key !== 'tgcportfolio') { // avoid duplication
       const option = document.createElement("option");
       option.value = key;
       option.textContent = project.name;
@@ -1033,11 +1042,13 @@ stateSelector.addEventListener('change', e => {
     filteredProjects = filteredProjects.filter(([key, project]) => project.state === selectedState);
   }
 
-  populateProjectDropdown(filteredProjects);
+  populateProjectDropdown(filteredProjects, selectedState);
 
   // Render first project in filtered list
-  renderProject(filteredProjects.length > 0 ? filteredProjects[0][0] : 'tgcportfolio');
+  const firstProjectKey = filteredProjects.length > 0 ? filteredProjects[0][0] : (selectedState === 'all' ? 'tgcportfolio' : null);
+  if (firstProjectKey) renderProject(firstProjectKey);
 });
+
 
 // --- Render function including custom Full TGC Portfolio H4s ---
 let slideIndex = 1;
