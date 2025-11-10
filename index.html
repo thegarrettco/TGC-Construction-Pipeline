@@ -1118,27 +1118,35 @@ Object.entries(project.financials).forEach(([label, info]) => {
 
       // Rendering Gallery
       const renderingDiv = content.querySelector(".rendering-section");
-      renderingDiv.innerHTML = `
-        ${project.renderings.map((img, i) => `
-          <div class="gallery-slide fade">
-            <img src="${img}" alt="${project.name} Rendering ${i + 1}">
-          </div>
-        `).join('')}
-        <a class="prev">&#10094;</a>
-        <a class="next">&#10095;</a>
-      `;
+  renderingDiv.innerHTML = `
+    ${project.renderings.map((img, i) => `
+      <div class="gallery-slide fade">
+        <img src="${img}" alt="${project.name} Rendering ${i + 1}">
+      </div>
+    `).join('')}
+    <a class="prev">&#10094;</a>
+    <a class="next">&#10095;</a>
+  `;
 
-      // Map
-      content.querySelector(".map-section iframe").src = project.mapUrl;
+  content.querySelector(".map-section iframe").src = project.mapUrl;
 
-      // Gallery functionality
-      slideIndex = 1;
-      showSlides(slideIndex);
+  // Gallery functionality
+  slideIndex = 1;
+  showSlides(slideIndex);
+  renderingDiv.querySelector(".prev").addEventListener("click", () => plusSlides(-1));
+  renderingDiv.querySelector(".next").addEventListener("click", () => plusSlides(1));
 
-      renderingDiv.querySelector(".prev").addEventListener("click", () => plusSlides(-1));
-      renderingDiv.querySelector(".next").addEventListener("click", () => plusSlides(1));
-    }
-
+  // --- ONLY now swap the section headings if it's Full TGC Portfolio ---
+  if (key === 'tgcportfolio') {
+    content.querySelector(".investment-highlights h4").textContent = "Portfolio Highlights";
+    content.querySelector(".property-details h4").textContent = "Pipeline Details";
+    // Financial Metrics heading stays the same
+  } else {
+    content.querySelector(".investment-highlights h4").textContent = "Investment Highlights";
+    content.querySelector(".property-details h4").textContent = "Property Details";
+    content.querySelector(".financial-metrics h4").textContent = "Financial Metrics";
+  }
+}
     function plusSlides(n) {
       showSlides(slideIndex += n);
     }
