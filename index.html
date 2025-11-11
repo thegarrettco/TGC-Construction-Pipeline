@@ -384,12 +384,12 @@ select[multiple], select {
   <header>
     <h1>
   <!-- Desktop logo -->
-  <a href="full-tgc-portfolio.html" class="logo-link">
+  <a href="#" class="logo-link" id="logoLinkDesktop" aria-label="Go to Full TGC Portfolio">
     <img src="https://static.wixstatic.com/media/4f7dd4_2baa0e2530394de3af14df33ce1cdfe9~mv2.png" alt="The Garrett Companies" class="logo-desktop">
   </a>
 
   <!-- Mobile logo -->
-  <a href="full-tgc-portfolio.html" class="logo-link">
+  <a href="#" class="logo-link" id="logoLinkMobile" aria-label="Go to Full TGC Portfolio">
     <img src="https://static.wixstatic.com/media/4f7dd4_70a90d24ec5746faa3b0ec0ace16b262~mv2.png" alt="The Garrett Companies" class="logo-mobile">
   </a>
 </h1>
@@ -1179,6 +1179,56 @@ Object.entries(project.financials).forEach(([label, info]) => {
   metricsDiv.appendChild(card);
 });
 
+// Safe logo-to-home behavior for single-page app (Full TGC Portfolio)
+function goToFullPortfolio(scrollToTop = true) {
+  // Make sure selectors exist
+  const stateSelectorEl = document.getElementById('stateSelector');
+  const projectSelectorEl = document.getElementById('projectSelector');
+
+  // Reset state filter to 'all' and re-populate project dropdown
+  if (stateSelectorEl) {
+    stateSelectorEl.value = 'all';
+    // trigger change programmatically so any attached listeners run
+    stateSelectorEl.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // Set project select to tgcportfolio if present; otherwise add it & select it
+  if (projectSelectorEl) {
+    // ensure option exists
+    let opt = projectSelectorEl.querySelector('option[value="tgcportfolio"]');
+    if (!opt) {
+      opt = new Option('Full TGC Portfolio', 'tgcportfolio');
+      projectSelectorEl.insertBefore(opt, projectSelectorEl.firstChild);
+    }
+    projectSelectorEl.value = 'tgcportfolio';
+    // also trigger change so any listeners update UI
+    projectSelectorEl.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // Render it explicitly (safe if renderProject is in scope)
+  if (typeof renderProject === 'function') {
+    renderProject('tgcportfolio');
+  }
+
+  if (scrollToTop) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Attach to logo links (prevents default navigation)
+const logoDesktop = document.getElementById('logoLinkDesktop');
+const logoMobile = document.getElementById('logoLinkMobile');
+
+if (logoDesktop) {
+  logoDesktop.addEventListener('click', function(e) {
+    e.preventDefault();
+    goToFullPortfolio();
+  });
+}
+if (logoMobile) {
+  logoMobile.addEventListener('click', function(e) {
+    e.preventDefault();
+    goToFullPortfolio();
+  });
+}
 
       // Rendering Gallery
       const renderingDiv = content.querySelector(".rendering-section");
